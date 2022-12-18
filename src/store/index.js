@@ -26,9 +26,13 @@ export default createStore({
     actions: {
         async loadData(context) {
             try {
+                // ngrok-skip-browser-warning
                 const res = await axios({
                     method: 'get',
-                    url: `https://5906-142-198-109-155.ngrok.io/api/fetchAll`,
+                    url: `https://63bf-142-198-109-155.ngrok.io/api/fetchAll`,
+                    headers: {
+                        'ngrok-skip-browser-warning': true
+                    }
                 })
                 if (res.status !== 200) {
                     throw Error('Something went wrong while loading data')
