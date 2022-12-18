@@ -1,1 +1,1 @@
-export const UPDATE_SYMBOL = 'UPDATE_SYMBOL'
+export const UPDATE_SYMBOLS = 'UPDATE_SYMBOLS'

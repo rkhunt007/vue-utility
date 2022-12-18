@@ -1,65 +1,58 @@
 <script>
-import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
 
 export default {
-   data() {
+  data() {
     return {
-      count: 1
-    }
+      count: 1,
+    };
   },
   computed: {
-    ...mapGetters([
-      'symbols',
-    ]),
+    ...mapGetters(["symbols"]),
   },
   methods: {
     ...mapMutations({
-      updateSymbol: 'UPDATE_SYMBOL' // map `this.add()` to `this.$store.commit('increment')`
+      updateSymbol: "UPDATE_SYMBOLS", // map `this.add()` to `this.$store.commit('increment')`
     }),
     ...mapActions({
-      loadData: 'loadData'
-    }),
-    load() {
-      console.log('load')
-      for (let i = 0; i < this.symbols.length; i++) {
-        const symbolObj = this.symbols[i];
-        this.loadData(symbolObj)
-      }
-    }
+      loadData: "loadData",
+    })
   },
   mounted() {
-    console.log('App mounted')
-    // console.log(this.$store)
-    // console.log(this.symbols)
-    // console.log(this.updateSymbol({ symbol: 'NFLX', currentPrice: 12}))
-    // console.log(this.symbols)
-  }
-}
-
+    this.loadData();
+  },
+};
 </script>
 
 <template>
   <header>
     <div class="wrapper">
-
       <h3>Stocks</h3>
       <table>
         <tr>
           <th>Symbol</th>
           <th>Price</th>
           <th>Month Low</th>
+          <th>Month -/+</th>
+          <th>Month %</th>
           <th>52-week Low</th>
+          <th>52-week -/+</th>
+          <th>52-week %</th>
         </tr>
         <tr v-for="item in symbols" :key="item.symbol">
-          <td>{{item.symbol}}</td>
-          <td>{{item.currentPrice}}</td>
-          <td>{{item.monthLow}}</td>
-          <td>{{item._52weekLow}}</td>
+          <td>{{ item.symbol }}</td>
+          <td>{{ item.currentPrice }}</td>
+          <td>{{ item.monthLow }}</td>
+          <td>{{ item.priceDiff }}</td>
+          <td>{{ item.pricePerc }}</td>
+          <td>{{ item._52weekLow }}</td>
+          <td>{{ item._52weekDiff }}</td>
+          <td>{{ item._52weekPerc }}</td>
         </tr>
       </table>
 
       <div>
-        <button @click="load()">Load data</button>
+        <button @click="loadData()">Refresh data</button>
       </div>
     </div>
   </header>
@@ -68,11 +61,14 @@ export default {
 </template>
 
 <style scoped>
-table, th, td {
+table,
+th,
+td {
   border: 1px solid black;
 }
-th, td {
-    min-width: 100px;
-    text-align: center;
-  }
+th,
+td {
+  min-width: 80px;
+  text-align: center;
+} 
 </style>
