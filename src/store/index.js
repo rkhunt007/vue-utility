@@ -28,7 +28,7 @@ export default createStore({
             try {
                 const res = await axios({
                     method: 'get',
-                    url: `http://192.168.2.13:5000/api/fetchAll`,
+                    url: `https://92f9-142-198-109-155.ngrok.io/api/fetchAll`,
                 })
                 if (res.status !== 200) {
                     throw Error('Something went wrong while loading data')
