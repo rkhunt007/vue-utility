@@ -16,7 +16,11 @@ export default {
     }),
     ...mapActions({
       loadData: "loadData",
-    })
+    }),
+    convertDate(isoFormat) {
+      let date = new Date(isoFormat);
+      return date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();
+    }
   },
   mounted() {
     this.loadData();
@@ -38,6 +42,7 @@ export default {
           <th>52-week Low</th>
           <th>52-week -/+</th>
           <th>52-week %</th>
+          <th>Last updated</th>
         </tr>
         <tr v-for="item in symbols" :key="item.symbol">
           <td>{{ item.symbol }}</td>
@@ -48,6 +53,7 @@ export default {
           <td>{{ item._52weekLow }}</td>
           <td>{{ item._52weekDiff }}</td>
           <td>{{ item._52weekPerc }}</td>
+          <td>{{ convertDate(item.date) }}</td>
         </tr>
       </table>
 
