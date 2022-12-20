@@ -1,1 +1,2 @@
 export const UPDATE_SYMBOLS = 'UPDATE_SYMBOLS'
+export const UPDATE_SORT = 'UPDATE_SORT'
