@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { UPDATE_SYMBOLS, UPDATE_SORT } from './mutation-types'
+import { UPDATE_SYMBOLS, UPDATE_SORT, UPDATE_SYMBOLS_API_PROGRESS, UPDATE_SYMBOL_ERROR } from './mutation-types'
 import axios from '../api';
 import apiFields from '../constants'
 import AMZN from '../testData/AMZN'
@@ -10,6 +10,8 @@ export default createStore({
     state() {
         return {
             symbols: [],
+            symbolsApiInProgress: false,
+            symbolsApiError: null,
             sortData: {
                 priceDiff: {
                     order: 'asc'
@@ -32,7 +34,9 @@ export default createStore({
         },
         getSortOrder: (state) => (field) => {
             return state.sortData[field].order;
-          }
+        },
+        symbolsApiInProgress: state => state.symbolsApiInProgress,
+        symbolsApiError: state => state.symbolsApiError,
     },
     mutations: {
         [UPDATE_SYMBOLS](state, payload) {
@@ -40,11 +44,18 @@ export default createStore({
         },
         [UPDATE_SORT](state, payload) {
             state.sortData[payload.sortArg].order = payload.order;
-        }
+        },
+        [UPDATE_SYMBOLS_API_PROGRESS](state, payload) {
+            state.symbolsApiInProgress = payload;
+        },
+        [UPDATE_SYMBOL_ERROR](state, payload) {
+            state.symbolsApiError = payload;
+        },
     },
     actions: {
         async loadData(context) {
             try {
+                context.commit(UPDATE_SYMBOLS_API_PROGRESS, true);
                 // ngrok-skip-browser-warning
                 const res = await axios({
                     method: 'get',
@@ -56,9 +67,13 @@ export default createStore({
                 if (res.status !== 200) {
                     throw Error('Something went wrong while loading data')
                 }
-                context.commit(UPDATE_SYMBOLS, res.data)
+                context.commit(UPDATE_SYMBOLS, res.data);
+                context.commit(UPDATE_SYMBOLS_API_PROGRESS, false);
+                context.commit(UPDATE_SYMBOL_ERROR, null);
                 
             } catch (error) {
+                context.commit(UPDATE_SYMBOLS_API_PROGRESS, false);
+                context.commit(UPDATE_SYMBOL_ERROR, error.message);
                 console.log('loadData error', error);
             }
         },

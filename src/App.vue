@@ -1,13 +1,21 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
+import Spinner from "./components/Spinner.vue";
 
 export default {
   data() {
-    return {};
+    return {
+
+    };
+  },
+  components: {
+    Spinner
   },
   computed: {
     ...mapGetters({
-      getSortOrder: 'getSortOrder'
+      getSortOrder: 'getSortOrder',
+      symbolsApiInProgress: 'symbolsApiInProgress',
+      symbolsApiError: 'symbolsApiError'
     }),
     symbols() {
       return this.$store.getters.symbols
@@ -36,58 +44,78 @@ export default {
   <header>
     <div class="wrapper">
       <h3>Stocks</h3>
-      <table>
-        <tr>
-          <th>Symbol</th>
-          <th>Price</th>
-          <th>Month Low</th>
-          <th>Month -/+
-            <span v-if="getSortOrder('priceDiff') == 'asc'" @click="sortSymbols({sortArg: 'priceDiff', order: 'desc'})">
-              <font-awesome-icon icon="fa-solid fa-chevron-up" class="sort-icon" />
-            </span>
-            <span v-if="getSortOrder('priceDiff') == 'desc'" @click="sortSymbols({sortArg: 'priceDiff', order: 'asc'})">
-              <font-awesome-icon icon="fa-solid fa-chevron-down" class="sort-icon" />
-            </span>
-          </th>
-          <th>Month %
-            <span v-if="getSortOrder('pricePerc') == 'asc'" @click="sortSymbols({sortArg: 'pricePerc', order: 'desc'})">
-              <font-awesome-icon icon="fa-solid fa-chevron-up" class="sort-icon" />
-            </span>
-            <span v-if="getSortOrder('pricePerc') == 'desc'" @click="sortSymbols({sortArg: 'pricePerc', order: 'asc'})">
-              <font-awesome-icon icon="fa-solid fa-chevron-down" class="sort-icon" />
-            </span>
-          </th>
-          <th>52-week Low</th>
-          <th>52-week -/+
-            <span v-if="getSortOrder('_52weekDiff') == 'asc'" @click="sortSymbols({sortArg: '_52weekDiff', order: 'desc'})">
-              <font-awesome-icon icon="fa-solid fa-chevron-up" class="sort-icon" />
-            </span>
-            <span v-if="getSortOrder('_52weekDiff') == 'desc'" @click="sortSymbols({sortArg: '_52weekDiff', order: 'asc'})">
-              <font-awesome-icon icon="fa-solid fa-chevron-down" class="sort-icon" />
-            </span>
-          </th>
-          <th>52-week %
-            <span v-if="getSortOrder('_52weekPerc') == 'asc'" @click="sortSymbols({sortArg: '_52weekPerc', order: 'desc'})">
-              <font-awesome-icon icon="fa-solid fa-chevron-up" class="sort-icon" />
-            </span>
-            <span v-if="getSortOrder('_52weekPerc') == 'desc'" @click="sortSymbols({sortArg: '_52weekPerc', order: 'asc'})">
-              <font-awesome-icon icon="fa-solid fa-chevron-down" class="sort-icon" />
-            </span>
-          </th>
-          <th>Last updated</th>
-        </tr>
-        <tr v-for="item in symbols" :key="item.symbol">
-          <td>{{ item.symbol }}</td>
-          <td>{{ item.currentPrice }}</td>
-          <td>{{ item.monthLow }}</td>
-          <td>{{ item.priceDiff }}</td>
-          <td>{{ item.pricePerc }}</td>
-          <td>{{ item._52weekLow }}</td>
-          <td>{{ item._52weekDiff }}</td>
-          <td>{{ item._52weekPerc }}</td>
-          <td style="min-width: 90px">{{ convertDate(item.date) }}</td>
-        </tr>
-      </table>
+      <div class="main-table">
+        
+        <table>
+          <tr>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Month Low</th>
+            <th>Month -/+
+              <span v-if="getSortOrder('priceDiff') == 'asc'"
+                @click="sortSymbols({ sortArg: 'priceDiff', order: 'desc' })">
+                <font-awesome-icon icon="fa-solid fa-chevron-up" class="sort-icon" />
+              </span>
+              <span v-if="getSortOrder('priceDiff') == 'desc'"
+                @click="sortSymbols({ sortArg: 'priceDiff', order: 'asc' })">
+                <font-awesome-icon icon="fa-solid fa-chevron-down" class="sort-icon" />
+              </span>
+            </th>
+            <th>Month %
+              <span v-if="getSortOrder('pricePerc') == 'asc'"
+                @click="sortSymbols({ sortArg: 'pricePerc', order: 'desc' })">
+                <font-awesome-icon icon="fa-solid fa-chevron-up" class="sort-icon" />
+              </span>
+              <span v-if="getSortOrder('pricePerc') == 'desc'"
+                @click="sortSymbols({ sortArg: 'pricePerc', order: 'asc' })">
+                <font-awesome-icon icon="fa-solid fa-chevron-down" class="sort-icon" />
+              </span>
+            </th>
+            <th>52-week Low</th>
+            <th>52-week -/+
+              <span v-if="getSortOrder('_52weekDiff') == 'asc'"
+                @click="sortSymbols({ sortArg: '_52weekDiff', order: 'desc' })">
+                <font-awesome-icon icon="fa-solid fa-chevron-up" class="sort-icon" />
+              </span>
+              <span v-if="getSortOrder('_52weekDiff') == 'desc'"
+                @click="sortSymbols({ sortArg: '_52weekDiff', order: 'asc' })">
+                <font-awesome-icon icon="fa-solid fa-chevron-down" class="sort-icon" />
+              </span>
+            </th>
+            <th>52-week %
+              <span v-if="getSortOrder('_52weekPerc') == 'asc'"
+                @click="sortSymbols({ sortArg: '_52weekPerc', order: 'desc' })">
+                <font-awesome-icon icon="fa-solid fa-chevron-up" class="sort-icon" />
+              </span>
+              <span v-if="getSortOrder('_52weekPerc') == 'desc'"
+                @click="sortSymbols({ sortArg: '_52weekPerc', order: 'asc' })">
+                <font-awesome-icon icon="fa-solid fa-chevron-down" class="sort-icon" />
+              </span>
+            </th>
+            <th>Last updated</th>
+          </tr>
+          <tr v-for="item in symbols" :key="item.symbol">
+            <td>{{ item.symbol }}</td>
+            <td>{{ item.currentPrice }}</td>
+            <td>{{ item.monthLow }}</td>
+            <td>{{ item.priceDiff }}</td>
+            <td>{{ item.pricePerc }}</td>
+            <td>{{ item._52weekLow }}</td>
+            <td>{{ item._52weekDiff }}</td>
+            <td>{{ item._52weekPerc }}</td>
+            <td style="min-width: 90px">{{ convertDate(item.date) }}</td>
+          </tr>
+        </table>
+
+        <div class="loading" v-if="symbolsApiInProgress">
+          <Spinner />
+        </div>
+
+        <div class="error" v-if="symbolsApiError">
+          {{ symbolsApiError }}
+        </div>
+
+      </div>
       <div>
         <button @click="loadData()">Refresh data</button>
       </div>
@@ -98,6 +126,11 @@ export default {
 </template>
 
 <style scoped>
+
+.main-table {
+  margin-bottom: 10px;
+}
+
 th,
 td {
   min-width: 80px;

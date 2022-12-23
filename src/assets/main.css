@@ -19,6 +19,20 @@ a,
   transition: 0.4s;
 }
 
+button {
+  padding: 5px 15px;
+}
+
+.error {
+  background: red;
+  color: white;
+  width: fit-content;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 5px 0px;
+}
+
 @media (hover: hover) {
   a:hover {
     background-color: hsla(160, 100%, 37%, 0.2);
