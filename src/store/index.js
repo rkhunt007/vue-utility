@@ -59,7 +59,7 @@ export default createStore({
                 // ngrok-skip-browser-warning
                 const res = await axios({
                     method: 'get',
-                    url: `https://2b1b-142-198-109-155.ngrok.io/api/fetchAll`,
+                    url: `https://676c-142-198-109-155.ngrok.io/api/fetchAll`,
                     headers: {
                         'ngrok-skip-browser-warning': true
                     }
